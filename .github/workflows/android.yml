@@ -24,9 +24,9 @@ jobs:
           sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
           ln -s vulkan_android.pc vulkan.pc
           sudo apt update
-          sudo apt install -y meson libxrandr-dev libxxf86vm-dev libxcb-*-dev libx11-xcb-dev libxfixes-dev libdrm-dev libx11-dev
+          sudo apt full-upgrade -y
+          sudo apt autopurge -y
           sudo apt build-dep -y mesa
-          sudo apt install -y 'libdrm*'
           cp -R /usr/include/X11 include/
           cp -R /usr/include/xcb include/
           cp -R /usr/include/GL/* include/GL/
@@ -57,8 +57,10 @@ jobs:
             -Dglx-direct=true \
             -Dopengl=true \
             -Dosmesa=true \
-            -Dvulkan-drivers= \
-            -Dgallium-drivers=zink,virgl \
+            -Dvulkan-drivers=freedreno \
+            -Db_lto \
+            -Dfreedreno-kmds=kgsl \
+            -Dgallium-drivers=zink \
             -Dshared-glapi=false
           ninja -C "build-android-${{matrix.arch}}" install
           # cp "build-android-${{matrix.arch}}/src/gallium/drivers/mesa/libzinkk.a" /tmp/mesa/lib/
